@@ -1,0 +1,16 @@
+[
+{
+  "modid": "magical_meringue",
+  "name": "Magical Meringue",
+  "description": "A magic mod for minecraft.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["ethylol"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
