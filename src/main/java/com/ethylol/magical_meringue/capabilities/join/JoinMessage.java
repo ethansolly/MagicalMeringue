@@ -7,6 +7,8 @@ public class JoinMessage implements IMessage {
 
     boolean joined;
 
+    public JoinMessage() { joined = false; }
+
     public JoinMessage(IJoinHandler handler) {
         this.joined = handler.hasJoined();
     }
