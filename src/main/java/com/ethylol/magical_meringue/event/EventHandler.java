@@ -21,6 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -31,6 +32,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import sun.security.util.Debug;
 
 
 @Mod.EventBusSubscriber(modid = MagicalMeringueCore.MODID)
@@ -55,15 +57,22 @@ public class EventHandler {
 
     }
 
+    @SubscribeEvent
+    public static void registerItemModels(ModelRegistryEvent event) {
+
+        //Register item models
+        registerItemModel(ModItems.spellbook);
+
+        //Register itemblock models
+    }
+
     private static void registerItemBlock(Block block, RegistryEvent.Register<Item> event) {
         Item itemBlock = new ItemBlock(block).setRegistryName(block.getRegistryName());
         event.getRegistry().registerAll(itemBlock);
-        registerItemModel(itemBlock);
     }
 
     private static void registerItem(Item item, RegistryEvent.Register<Item> event) {
         event.getRegistry().register(item);
-        registerItemModel(item);
     }
 
     @SideOnly(Side.CLIENT)
