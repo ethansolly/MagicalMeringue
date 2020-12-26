@@ -18,10 +18,10 @@ import java.util.List;
 public class Spellbook extends Item {
 
     public Spellbook() {
-        setCreativeTab(CreativeTab.TAB);
-        setMaxStackSize(1);
         setUnlocalizedName(MagicalMeringueCore.MODID + ":spellbook");
         setRegistryName(new ResourceLocation(MagicalMeringueCore.MODID, "spellbook"));
+        setMaxStackSize(1);
+        setCreativeTab(CreativeTab.TAB);
     }
 
     /** TODO add GUI functionality

@@ -33,23 +33,35 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = MagicalMeringueCore.MODID)
 public class EventHandler {
 
     //Registration
 
     @SubscribeEvent
-    public void registerItems(RegistryEvent.Register<Item> event) {
-        registerItem(new Spellbook(), event);
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        //Register blocks
+
+        //Register tileentities
     }
 
-    private void registerItemBlock(Block block, RegistryEvent.Register<Item> event) {
+
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+        //Register items
+        registerItem(new Spellbook(), event);
+
+        //Register itemblocks
+
+    }
+
+    private static void registerItemBlock(Block block, RegistryEvent.Register<Item> event) {
         Item itemBlock = new ItemBlock(block).setRegistryName(block.getRegistryName());
         event.getRegistry().registerAll(itemBlock);
         registerItemModel(itemBlock);
     }
 
-    private void registerItem(Item item, RegistryEvent.Register<Item> event) {
+    private static void registerItem(Item item, RegistryEvent.Register<Item> event) {
         event.getRegistry().register(item);
         registerItemModel(item);
     }
