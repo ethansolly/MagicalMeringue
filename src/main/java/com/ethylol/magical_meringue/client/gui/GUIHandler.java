@@ -3,6 +3,7 @@ package com.ethylol.magical_meringue.client.gui;
 import com.ethylol.magical_meringue.MagicalMeringueCore;
 import com.ethylol.magical_meringue.capabilities.Capabilities;
 import com.ethylol.magical_meringue.capabilities.mana.IManaHandler;
+import com.ethylol.magical_meringue.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,10 +33,11 @@ public class GUIHandler {
                 ScaledResolution scaled = new ScaledResolution(mc);
                 //int width = scaled.getScaledWidth();
                 int height = scaled.getScaledHeight();
+                int color = Utils.colorFromHexString("FFAA00");
 
-                mc.fontRenderer.drawStringWithShadow("Available Mana:", 10, 10, Integer.parseInt("FFAA00", 16));
+                mc.fontRenderer.drawStringWithShadow("Available Mana:", 10, 10, color);
                 for (int i = 0; i < manaHandler.getLvl(); i++) {
-                    mc.fontRenderer.drawStringWithShadow("Tier " + (i+1) + ": " + manaHandler.getMana(i), 20, 10+(height-20)*(i+1)/10, Integer.parseInt("FFAA00", 16));
+                    mc.fontRenderer.drawStringWithShadow("Tier " + (i+1) + ": " + manaHandler.getMana(i), 20, 10+(height-20)*(i+1)/10, color);
                 }
 
             }

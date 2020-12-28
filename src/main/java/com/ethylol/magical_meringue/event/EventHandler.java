@@ -9,10 +9,13 @@ import com.ethylol.magical_meringue.capabilities.mana.IManaHandler;
 import com.ethylol.magical_meringue.capabilities.mana.ManaProvider;
 import com.ethylol.magical_meringue.item.ModItems;
 import com.ethylol.magical_meringue.item.Spellbook;
+import com.ethylol.magical_meringue.proxy.ClientProxy;
 import com.ethylol.magical_meringue.utils.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -29,10 +32,15 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import sun.security.util.Debug;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 
 @Mod.EventBusSubscriber(modid = MagicalMeringueCore.MODID)
@@ -110,14 +118,10 @@ public class EventHandler {
             IJoinHandler joinHandler = player.getCapability(Capabilities.JOIN_HANDLER_CAPABILITY, null);
             if (joinHandler != null && !joinHandler.hasJoined()) {
                 ItemStack stack = new ItemStack(ModItems.spellbook);
-                NBTTagCompound stackCompound;
-                if (stack.hasTagCompound())
-                    stackCompound = stack.getTagCompound();
-                else
-                    stackCompound = new NBTTagCompound();
-                stackCompound.setUniqueId("boundTo", player.getUniqueID());
-                stack.setTagCompound(stackCompound);
-                player.addItemStackToInventory(stack);
+                EntityItem entityItem = new EntityItem(event.getWorld(), player.posX, player.posY, player.posZ, stack);
+                entityItem.setNoPickupDelay();
+                event.getWorld().spawnEntity(entityItem);
+
                 joinHandler.setJoined(true);
                 MagicalMeringueCore.network.sendTo(new JoinMessage(joinHandler), (EntityPlayerMP) player);
             }
@@ -136,6 +140,35 @@ public class EventHandler {
 
         }
     }
+
+    /*
+    @SubscribeEvent
+    public static void onItemPickup(net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemPickupEvent event) {
+        ItemStack stack = event.getStack();
+        EntityPlayer player = event.player;
+        if (stack.getItem() == ModItems.spellbook) {
+            NBTTagCompound compound;
+            if (stack.hasTagCompound() && !stack.getTagCompound().hasKey("boundTo")) {
+                //MagicalMeringueCore.getLogger().debug("----------Has compound----------");
+                compound = stack.getTagCompound();
+                compound.setUniqueId("boundTo", player.getUniqueID());
+                stack.setTagCompound(compound);
+            }
+            else if (!stack.hasTagCompound()) {
+                //MagicalMeringueCore.getLogger().debug("----------Has NO compound----------");
+                compound = new NBTTagCompound();
+                compound.setUniqueId("boundTo", player.getUniqueID());
+                stack.setTagCompound(compound);
+            }
+            else {
+                //MagicalMeringueCore.getLogger().debug("----------Has compound and is bound???----------");
+            }
+        }
+        else {
+            //MagicalMeringueCore.getLogger().debug("----------ISN'T A SPELLBOOK???----------");
+        }
+    }
+     */
 
     @SubscribeEvent
     public static void cloneEvent(PlayerEvent.Clone event) {

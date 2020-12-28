@@ -10,4 +10,8 @@ public class Utils {
     public static int maxMana(int tier, int level) {
         return (tier > level)? 0 : 12 << (level-tier-1);
     }
+
+    public static int colorFromHexString(String hex) {
+        return Integer.parseInt(hex, 16);
+    }
 }
