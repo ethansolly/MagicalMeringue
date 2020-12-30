@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -35,11 +36,13 @@ public class RayTraceMessageHandler implements IMessageHandler<RayTraceMessage, 
 
                 //Break Block
                 IBlockState blockState = w.getBlockState(pos);
-                float cost = (float) Math.ceil(1.0f / (1.0f / blockState.getBlockHardness(w, pos) / 30.0f)) / 5.0f;
-                if (manaHandler.getMana(0) >= cost) {
-                    playerMP.getServerWorld().addScheduledTask(() -> w.destroyBlock(pos, true));
-                    manaHandler.useMana(0, cost);
-                    MagicalMeringueCore.network.sendTo(new ManaMessage(manaHandler), playerMP);
+                if (blockState.getBlockHardness(w, pos) != -1.0f) {
+                    float cost = (float) Math.ceil(1.0f / (1.0f / blockState.getBlockHardness(w, pos) / 30.0f)) / 5.0f;
+                    if (manaHandler.getMana(0) >= cost) {
+                        playerMP.getServerWorld().addScheduledTask(() -> w.destroyBlock(pos, true));
+                        manaHandler.useMana(0, cost);
+                        MagicalMeringueCore.network.sendTo(new ManaMessage(manaHandler), playerMP);
+                    }
                 }
             } else if (message.getMessageType() == RayTraceMessage.MessageType.LEVITATE) {
 

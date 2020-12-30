@@ -7,6 +7,7 @@ import com.ethylol.magical_meringue.capabilities.mana.ManaMessage;
 import com.ethylol.magical_meringue.capabilities.mana.ManaMessageHandler;
 import com.ethylol.magical_meringue.network.RayTraceMessage;
 import com.ethylol.magical_meringue.network.RayTraceMessageHandler;
+import com.ethylol.magical_meringue.network.UpdateBookMessage;
 import com.ethylol.magical_meringue.proxy.IProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -45,6 +46,7 @@ public class MagicalMeringueCore {
         network.registerMessage(ManaMessageHandler.class, ManaMessage.class, discriminator++, Side.SERVER);
         network.registerMessage(JoinMessageHandler.class, JoinMessage.class, discriminator++, Side.CLIENT);
         network.registerMessage(RayTraceMessageHandler.class, RayTraceMessage.class, discriminator++, Side.SERVER);
+        network.registerMessage(UpdateBookMessage.UpdateBookMessageHandler.class, UpdateBookMessage.class, discriminator++,Side.SERVER);
 
         Capabilities.register();
 

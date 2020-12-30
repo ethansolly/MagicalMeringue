@@ -21,17 +21,16 @@ public class SmeltItem implements ISpellEffect {
             IManaHandler manaHandler = caster.getCapability(Capabilities.MANA_HANDLER_CAPABILITY, null);
             if (manaHandler != null && manaHandler.getMana(0) >= 4) {
                 ArrayList<Integer> list = new ArrayList<>();
-                for (int i = 0; i < caster.inventory.mainInventory.size(); i++) {
-                    ItemStack stack = caster.inventory.mainInventory.get(i);
+                for (int i = 0; i < caster.inventory.getSizeInventory(); i++) {
+                    ItemStack stack = caster.inventory.getStackInSlot(i);
                     if (!FurnaceRecipes.instance().getSmeltingResult(stack).isEmpty()) {
                         list.add(i);
                     }
                 }
                 if (!list.isEmpty()) {
                     int randIndex = list.get((int) (Math.random() * list.size()));
-                    ItemStack smeltMe = caster.inventory.mainInventory.get(randIndex);
-                    caster.inventory.mainInventory.remove(randIndex);
-                    caster.inventory.mainInventory.add(randIndex, FurnaceRecipes.instance().getSmeltingResult(smeltMe));
+                    ItemStack smeltMe = caster.inventory.decrStackSize(randIndex, 1);
+                    caster.inventory.addItemStackToInventory(FurnaceRecipes.instance().getSmeltingResult(smeltMe));
 
                     manaHandler.useMana(0, 4);
                     MagicalMeringueCore.network.sendToServer(new ManaMessage(manaHandler));

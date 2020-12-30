@@ -5,7 +5,9 @@ import com.ethylol.magical_meringue.capabilities.Capabilities;
 import com.ethylol.magical_meringue.capabilities.mana.IManaHandler;
 import com.ethylol.magical_meringue.item.Spellbook;
 import com.ethylol.magical_meringue.magic.Spell;
+import com.ethylol.magical_meringue.network.UpdateBookMessage;
 import com.ethylol.magical_meringue.utils.Utils;
+import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
@@ -14,6 +16,8 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
@@ -72,16 +76,25 @@ public class GuiSpellbook extends GuiScreen {
         spells = new ArrayList<>();
         list = Spell.list;
         list.removeIf(s -> s.getEffect().tier() != currPage);
-        list.sort(Comparator.comparing(c -> c.getEffect().name()));
-        for (int i = 0; i < list.size(); i++) {
-            Spell s = list.get(i);
-            GuiButton spellButton = this.addButton(new GuiButton(3+i, width/2-150+36, 34+25*i, 90, 20, s.getEffect().name()));
-            this.spells.add(spellButton);
-            if (bookStack.getTagCompound().hasKey("spell") && bookStack.getTagCompound().getString("spell").equals(s.getEffect().name())) {
-                spellButton.packedFGColour = BLUE;
-                selectedButton = spellButton;
+        if (list.size() > 0) {
+            list.sort(Comparator.comparing(c -> c.getEffect().name()));
+            for (int i = 0; i < list.size(); i++) {
+                Spell s = list.get(i);
+                GuiButton spellButton = this.addButton(new GuiButton(3 + i, width / 2 - 150 + 36, 34 + 25 * i, 90, 20, s.getEffect().name()));
+                this.spells.add(spellButton);
+                if (bookStack.getTagCompound().hasKey("spell") && bookStack.getTagCompound().getString("spell").equals(s.getEffect().name())) {
+                    spellButton.packedFGColour = BLUE;
+                    selectedButton = spellButton;
+                }
             }
         }
+        else {
+            fontRenderer.drawString("No spells here...", width/2 - 150 + 36, 34, 0);
+        }
+
+        this.buttonLeft.visible = (currPage != 0);
+        this.buttonRight.visible = (currPage != level - 1);
+
     }
 
     @Override
@@ -108,10 +121,12 @@ public class GuiSpellbook extends GuiScreen {
             if (button.id >= 3) {
                 if (button != selectedButton) {
                     //select new button
+                    MagicalMeringueCore.getLogger().debug(level + " " + currPage);
                     Spell selected = list.get(button.id - 3);
                     NBTTagCompound compound = bookStack.getTagCompound();
                     compound.setString("spell", selected.getEffect().name());
                     bookStack.setTagCompound(compound);
+
                     button.packedFGColour = BLUE;
                     if (selectedButton != null) {
                         selectedButton.packedFGColour = 0;
@@ -126,6 +141,8 @@ public class GuiSpellbook extends GuiScreen {
                     selectedButton.packedFGColour = 0;
                     selectedButton = null;
                 }
+
+                MagicalMeringueCore.network.sendToServer(new UpdateBookMessage(bookStack));
             }
         }
     }
