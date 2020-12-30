@@ -10,7 +10,7 @@ public class ManaHandler implements IManaHandler {
     float[] mana;
 
     public ManaHandler() {
-        lvl = 1;
+        lvl = 10;
         mana = new float[IManaHandler.MAX_TIER];
         for (int i = 0; i < IManaHandler.MAX_TIER; i++) {
             mana[i] = Utils.maxMana(i, lvl);

@@ -5,7 +5,9 @@ import com.ethylol.magical_meringue.capabilities.join.JoinMessage;
 import com.ethylol.magical_meringue.capabilities.join.JoinMessageHandler;
 import com.ethylol.magical_meringue.capabilities.mana.ManaMessage;
 import com.ethylol.magical_meringue.capabilities.mana.ManaMessageHandler;
-import com.ethylol.magical_meringue.proxy.CommonProxy;
+import com.ethylol.magical_meringue.network.RayTraceMessage;
+import com.ethylol.magical_meringue.network.RayTraceMessageHandler;
+import com.ethylol.magical_meringue.proxy.IProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -24,8 +26,8 @@ public class MagicalMeringueCore {
     @Mod.Instance(value = "magical_meringue")
     public static MagicalMeringueCore instance;
 
-    @SidedProxy(clientSide = "com.ethylol.magical_meringue.proxy.ClientProxy", serverSide = "com.ethylol.magical_meringue.proxy.CommonProxy")
-    public static CommonProxy proxy;
+    @SidedProxy(clientSide = "com.ethylol.magical_meringue.proxy.ClientProxy", serverSide = "com.ethylol.magical_meringue.proxy.IProxy")
+    public static IProxy proxy;
 
     //Add config
 
@@ -40,7 +42,9 @@ public class MagicalMeringueCore {
 
         network = NetworkRegistry.INSTANCE.newSimpleChannel("magical_meringue_channel");
         network.registerMessage(ManaMessageHandler.class, ManaMessage.class, discriminator++, Side.CLIENT);
+        network.registerMessage(ManaMessageHandler.class, ManaMessage.class, discriminator++, Side.SERVER);
         network.registerMessage(JoinMessageHandler.class, JoinMessage.class, discriminator++, Side.CLIENT);
+        network.registerMessage(RayTraceMessageHandler.class, RayTraceMessage.class, discriminator++, Side.SERVER);
 
         Capabilities.register();
 

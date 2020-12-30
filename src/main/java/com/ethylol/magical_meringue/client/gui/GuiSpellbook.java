@@ -18,11 +18,13 @@ import net.minecraft.util.ResourceLocation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class GuiSpellbook extends GuiScreen {
 
     private static final ResourceLocation GUI_TEXTURES = new ResourceLocation(MagicalMeringueCore.MODID, "textures/gui/spellbook.png");
+    private static int BLUE = Utils.colorFromHexString("0000FF");
     private EntityPlayer player;
     private ItemStack bookStack;
     private int level;
@@ -36,6 +38,7 @@ public class GuiSpellbook extends GuiScreen {
     private List<Spell> list;
 
     private GuiButton selectedButton;
+
 
     public GuiSpellbook(EntityPlayer player, ItemStack bookStack) {
         this.player = player;
@@ -69,9 +72,15 @@ public class GuiSpellbook extends GuiScreen {
         spells = new ArrayList<>();
         list = Spell.list;
         list.removeIf(s -> s.getEffect().tier() != currPage);
+        list.sort(Comparator.comparing(c -> c.getEffect().name()));
         for (int i = 0; i < list.size(); i++) {
             Spell s = list.get(i);
-            this.spells.add(this.addButton(new GuiButton(3+i, width/2-150+36, 34+i, 90, 20, s.getEffect().name())));
+            GuiButton spellButton = this.addButton(new GuiButton(3+i, width/2-150+36, 34+25*i, 90, 20, s.getEffect().name()));
+            this.spells.add(spellButton);
+            if (bookStack.getTagCompound().hasKey("spell") && bookStack.getTagCompound().getString("spell").equals(s.getEffect().name())) {
+                spellButton.packedFGColour = BLUE;
+                selectedButton = spellButton;
+            }
         }
     }
 
@@ -94,7 +103,7 @@ public class GuiSpellbook extends GuiScreen {
             }
             if (button.id == 2) {
                 //exit
-                this.mc.displayGuiScreen((GuiScreen) null);
+                this.mc.displayGuiScreen(null);
             }
             if (button.id >= 3) {
                 if (button != selectedButton) {
@@ -103,7 +112,7 @@ public class GuiSpellbook extends GuiScreen {
                     NBTTagCompound compound = bookStack.getTagCompound();
                     compound.setString("spell", selected.getEffect().name());
                     bookStack.setTagCompound(compound);
-                    button.packedFGColour = Utils.colorFromHexString("0000FF");
+                    button.packedFGColour = BLUE;
                     if (selectedButton != null) {
                         selectedButton.packedFGColour = 0;
                     }

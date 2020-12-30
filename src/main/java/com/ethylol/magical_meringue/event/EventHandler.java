@@ -6,6 +6,7 @@ import com.ethylol.magical_meringue.capabilities.join.IJoinHandler;
 import com.ethylol.magical_meringue.capabilities.join.JoinMessage;
 import com.ethylol.magical_meringue.capabilities.join.JoinProvider;
 import com.ethylol.magical_meringue.capabilities.mana.IManaHandler;
+import com.ethylol.magical_meringue.capabilities.mana.ManaMessage;
 import com.ethylol.magical_meringue.capabilities.mana.ManaProvider;
 import com.ethylol.magical_meringue.item.ModItems;
 import com.ethylol.magical_meringue.item.Spellbook;
@@ -126,17 +127,10 @@ public class EventHandler {
                 MagicalMeringueCore.network.sendTo(new JoinMessage(joinHandler), (EntityPlayerMP) player);
             }
 
-            /*
             IManaHandler manaHandler = player.getCapability(Capabilities.MANA_HANDLER_CAPABILITY, null);
             if (manaHandler != null) {
-                MagicalMeringueCore.getLogger().debug("Testing mana:");
-                MagicalMeringueCore.getLogger().debug("\tLevel: " + manaHandler.getLvl());
-                for (int i = 0; i < IManaHandler.MAX_TIER; i++) {
-                    MagicalMeringueCore.getLogger().debug("\tMana_" + i + ": " + manaHandler.getMana(i));
-                }
                 MagicalMeringueCore.network.sendTo(new ManaMessage(manaHandler), (EntityPlayerMP) player);
             }
-            */
 
         }
     }
@@ -191,5 +185,6 @@ public class EventHandler {
                 manaHandler.setMana(i, Utils.maxMana(i, level));
             }
         }
+
     }
 }
